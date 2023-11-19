@@ -76,9 +76,6 @@ export class GeoLocation {
    *            The elevation to set in Meters. An IllegalArgumentException will be thrown if the value is a negative.
    */
   public setElevation(elevation: number): void {
-    if (elevation < 0) {
-      throw new Error('Elevation cannot be negative');
-    }
     this.elevation = elevation;
   }
 
