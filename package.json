@@ -1,0 +1,49 @@
+{
+  "name": "@hebcal/noaa",
+  "version": "0.8.0",
+  "description": "sunrise and sunset via NOAA algorithm with elevation, based on KosherJava",
+  "author": "Michael J. Radwin (https://github.com/mjradwin)",
+  "contributors": [
+    "BehindTheMath (https://github.com/BehindTheMath)",
+    "Eliyahu Hershfeld (https://github.com/KosherJava)"
+  ],
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hebcal/noaa.git"
+  },
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build:es6 && npm run build:cjs && npm run build:types",
+    "build:cjs": "tsc",
+    "build:es6": "tsc -p ./tsconfig-es6.json",
+    "build:types": "tsc -p ./tsconfig-types.json",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "keywords": [
+    "zmanim",
+    "zman",
+    "kosherzmanim",
+    "kosher-zmanim",
+    "kosherjava"
+  ],
+  "files": [
+    "dist/*"
+  ],
+  "devDependencies": {
+    "@types/node": "20.8.2",
+    "gts": "^5.2.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "temporal-polyfill": "^0.1.1"
+  }
+}
