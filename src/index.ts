@@ -772,7 +772,9 @@ export class NOAACalculator {
     if (startOfday === null || endOfDay === null) {
       return Long_MIN_VALUE;
     }
-    return (endOfDay.valueOf() - startOfday.valueOf()) / 12;
+    const delta: number =
+      endOfDay.epochMilliseconds - startOfday.epochMilliseconds;
+    return Math.floor(delta / 12);
   }
 
   /**
