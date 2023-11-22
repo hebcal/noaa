@@ -195,18 +195,21 @@ export class GeoLocation {
 /**
  * The commonly used average solar refraction. Calendrical Calculations lists a more accurate global average of
  * 34.478885263888294
+ * @private
  */
 const refraction: number = 34 / 60;
 // private double refraction = 34.478885263888294 / 60d;
 
 /**
  * The commonly used average solar radius in minutes of a degree.
+ * @private
  */
 const solarRadius: number = 16 / 60;
 
 /**
  * The commonly used average earth radius in KM. At this time, this only affects elevation adjustment and not the
  * sunrise and sunset calculations. The value currently defaults to 6356.9 KM.
+ * @private
  */
 const earthRadius = 6356.9; // in KM
 
@@ -226,6 +229,7 @@ const earthRadius = 6356.9; // in KM
 export class NOAACalculator {
   /**
    * The zenith of astronomical sunrise and sunset. The sun is 90&deg; from the vertical 0&deg;
+   * @private
    */
   private static readonly GEOMETRIC_ZENITH: number = 90;
 
@@ -253,11 +257,13 @@ export class NOAACalculator {
 
   /**
    * The Java Calendar encapsulated by this class to track the current date used by the class
+   * @private
    */
   private date!: Temporal.PlainDate;
 
   /**
    * the {@link GeoLocation} used for calculations.
+   * @private
    */
   private geoLocation!: GeoLocation;
   /**
@@ -590,7 +596,7 @@ export class NOAACalculator {
 
   /**
    * Adjusts the <code>Calendar</code> to deal with edge cases where the location crosses the antimeridian.
-   *
+   * @private
    * @see GeoLocation#getAntimeridianAdjustment()
    * @return the adjusted Calendar
    */
@@ -677,11 +683,13 @@ export class NOAACalculator {
 
   /**
    * The <a href="http://en.wikipedia.org/wiki/Julian_day">Julian day</a> of January 1, 2000
+   * @private
    */
   private static readonly JULIAN_DAY_JAN_1_2000: number = 2451545;
 
   /**
    * Julian days per century
+   * @private
    */
   private static readonly JULIAN_DAYS_PER_CENTURY: number = 36525;
 
@@ -805,7 +813,7 @@ export class NOAACalculator {
 
   /**
    * A method that returns a <code>Date</code> from the time passed in as a parameter.
-   *
+   * @protected
    * @param time
    *            The time to be set as the time for the <code>Date</code>. The time expected is in the format: 18.75
    *            for 6:45:00 PM.
@@ -858,7 +866,7 @@ export class NOAACalculator {
 
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Julian_day">Julian day</a> from a Java Calendar
-   *
+   * @private
    * @param calendar
    *            The Java Calendar
    * @return the Julian day corresponding to the date Note: Number is returned for start of day. Fractional days
@@ -885,7 +893,7 @@ export class NOAACalculator {
 
   /**
    * Convert <a href="http://en.wikipedia.org/wiki/Julian_day">Julian day</a> to centuries since J2000.0.
-   *
+   * @private
    * @param julianDay
    *            the Julian Day to convert
    * @return the centuries since 2000 Julian corresponding to the Julian Day
@@ -899,7 +907,7 @@ export class NOAACalculator {
 
   /**
    * Convert centuries since J2000.0 to <a href="http://en.wikipedia.org/wiki/Julian_day">Julian day</a>.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the Julian Day corresponding to the Julian centuries passed in
@@ -915,7 +923,7 @@ export class NOAACalculator {
 
   /**
    * Returns the Geometric <a href="http://en.wikipedia.org/wiki/Mean_longitude">Mean Longitude</a> of the Sun.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the Geometric Mean Longitude of the Sun in degrees
@@ -935,7 +943,7 @@ export class NOAACalculator {
 
   /**
    * Returns the Geometric <a href="http://en.wikipedia.org/wiki/Mean_anomaly">Mean Anomaly</a> of the Sun.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the Geometric Mean Anomaly of the Sun in degrees
@@ -948,7 +956,7 @@ export class NOAACalculator {
 
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Eccentricity_%28orbit%29">eccentricity of earth's orbit</a>.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the unitless eccentricity
@@ -962,7 +970,7 @@ export class NOAACalculator {
 
   /**
    * Returns the <a href="http://en.wikipedia.org/wiki/Equation_of_the_center">equation of center</a> for the sun.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the equation of center for the sun in degrees
@@ -986,7 +994,7 @@ export class NOAACalculator {
 
   /**
    * Return the true longitude of the sun
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the sun's true longitude in degrees
@@ -1000,23 +1008,9 @@ export class NOAACalculator {
     return sunLongitude + center; // in degrees
   }
 
-  // /**
-  // * Returns the <a href="http://en.wikipedia.org/wiki/True_anomaly">true anamoly</a> of the sun.
-  // *
-  // * @param julianCenturies
-  // * the number of Julian centuries since J2000.0
-  // * @return the sun's true anamoly in degrees
-  // */
-  // private static double getSunTrueAnomaly(double julianCenturies) {
-  // double meanAnomaly = getSunGeometricMeanAnomaly(julianCenturies);
-  // double equationOfCenter = getSunEquationOfCenter(julianCenturies);
-  //
-  // return meanAnomaly + equationOfCenter; // in degrees
-  // }
-
   /**
    * Return the apparent longitude of the sun
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return sun's apparent longitude in degrees
@@ -1033,7 +1027,7 @@ export class NOAACalculator {
 
   /**
    * Returns the mean <a href="http://en.wikipedia.org/wiki/Axial_tilt">obliquity of the ecliptic</a> (Axial tilt).
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the mean obliquity in degrees
@@ -1049,7 +1043,7 @@ export class NOAACalculator {
   /**
    * Returns the corrected <a href="http://en.wikipedia.org/wiki/Axial_tilt">obliquity of the ecliptic</a> (Axial
    * tilt).
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return the corrected obliquity in degrees
@@ -1064,7 +1058,7 @@ export class NOAACalculator {
 
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Declination">declination</a> of the sun.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return
@@ -1086,7 +1080,7 @@ export class NOAACalculator {
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Equation_of_time">Equation of Time</a> - the difference between
    * true solar time and mean solar time
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @return equation of time in minutes of time
@@ -1122,7 +1116,7 @@ export class NOAACalculator {
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Hour_angle">hour angle</a> of the sun at sunrise for the
    * latitude.
-   *
+   * @private
    * @param lat
    *            , the latitude of observer in degrees
    * @param solarDec
@@ -1150,7 +1144,7 @@ export class NOAACalculator {
    * Returns the <a href="http://en.wikipedia.org/wiki/Hour_angle">hour angle</a> of the sun at sunset for the
    * latitude. TODO: use - {@link #getSunHourAngleAtSunrise(double, double, double)} implementation to avoid
    * duplication of code.
-   *
+   * @private
    * @param lat
    *            the latitude of observer in degrees
    * @param solarDec
@@ -1266,7 +1260,7 @@ export class NOAACalculator {
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Universal_Coordinated_Time">Universal Coordinated Time</a> (UTC)
    * of sunrise for the given day at the given location on earth
-   *
+   * @private
    * @param julianDay
    *            the Julian day
    * @param latitude
@@ -1334,7 +1328,7 @@ export class NOAACalculator {
    * Return the <a href="http://en.wikipedia.org/wiki/Universal_Coordinated_Time">Universal Coordinated Time</a> (UTC)
    * of <a href="http://en.wikipedia.org/wiki/Noon#Solar_noon">solar noon</a> for the given day at the given location
    * on earth.
-   *
+   * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
    * @param longitude
@@ -1366,7 +1360,7 @@ export class NOAACalculator {
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Universal_Coordinated_Time">Universal Coordinated Time</a> (UTC)
    * of sunset for the given day at the given location on earth
-   *
+   * @private
    * @param julianDay
    *            the Julian day
    * @param latitude
