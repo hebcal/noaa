@@ -2,6 +2,7 @@ import {Temporal} from 'temporal-polyfill';
 
 /**
  * java.lang.Math.toRadians
+ * @private
  * @param degrees
  */
 function degreesToRadians(degrees: number): number {
@@ -10,6 +11,7 @@ function degreesToRadians(degrees: number): number {
 
 /**
  * java.lang.Math.toDegrees
+ * @private
  * @param radians
  */
 function radiansToDegrees(radians: number): number {
@@ -29,72 +31,21 @@ const Long_MIN_VALUE = NaN;
  */
 export class GeoLocation {
   /**
-   * @see #getLatitude()
-   * @see #setLatitude(double)
-   * @see #setLatitude(int, int, double, String)
-   */
-  private latitude!: number;
-
-  /**
-   * @see #getLongitude()
-   * @see #setLongitude(double)
-   * @see #setLongitude(int, int, double, String)
-   */
-  private longitude!: number;
-
-  /**
-   * @see #getLocationName()
-   * @see #setLocationName(String)
-   */
-  private locationName: string | null = null;
-
-  /**
-   * @see #getTimeZone()
-   * @see #setTimeZone(TimeZone)
-   */
-  private timeZoneId!: string;
-
-  /**
-   * @see #getElevation()
-   * @see #setElevation(double)
-   */
-  private elevation!: number;
-
-  /**
-   * Method to get the elevation in Meters.
-   *
-   * @return Returns the elevation in Meters.
-   */
-  public getElevation(): number {
-    return this.elevation;
-  }
-
-  /**
-   * Method to set the elevation in Meters <b>above </b> sea level.
-   *
-   * @param elevation
-   *            The elevation to set in Meters. An IllegalArgumentException will be thrown if the value is a negative.
-   */
-  public setElevation(elevation: number): void {
-    this.elevation = elevation;
-  }
-
-  /**
    * GeoLocation constructor with parameters for all required fields.
    *
-   * @param name
+   * @param {string} name
    *            The location name for display use such as &quot;Lakewood, NJ&quot;
-   * @param latitude
+   * @param {number} latitude
    *            the latitude in a double format such as 40.095965 for Lakewood, NJ.
    *            <b>Note: </b> For latitudes south of the equator, a negative value should be used.
-   * @param longitude
+   * @param {number} longitude
    *            double the longitude in a double format such as -74.222130 for Lakewood, NJ.
    *            <b>Note: </b> For longitudes east of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
    *            Meridian </a> (Greenwich), a negative value should be used.
-   * @param elevation
+   * @param {number} elevation
    *            the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating
    *            sunrise and set.
-   * @param timeZoneId
+   * @param {string} timeZoneId
    *            the <code>TimeZone</code> for the location.
    */
   constructor(
@@ -110,11 +61,28 @@ export class GeoLocation {
     longitude: number,
     timeZoneId: string
   );
-  constructor();
+  /**
+   * GeoLocation constructor with parameters for all required fields.
+   *
+   * @param {string} name
+   *            The location name for display use such as &quot;Lakewood, NJ&quot;
+   * @param {number} latitude
+   *            the latitude in a double format such as 40.095965 for Lakewood, NJ.
+   *            <b>Note: </b> For latitudes south of the equator, a negative value should be used.
+   * @param {number} longitude
+   *            double the longitude in a double format such as -74.222130 for Lakewood, NJ.
+   *            <b>Note: </b> For longitudes east of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
+   *            Meridian </a> (Greenwich), a negative value should be used.
+   * @param {number} elevation
+   *            the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating
+   *            sunrise and set.
+   * @param {string} timeZoneId
+   *            the <code>TimeZone</code> for the location.
+   */
   constructor(
-    name: string | null = 'Greenwich, England',
-    latitude = 51.4772,
-    longitude = 0,
+    name: string | null,
+    latitude: number,
+    longitude: number,
     elevationOrTimeZoneId?: number | string,
     timeZoneId?: string
   ) {
@@ -132,12 +100,68 @@ export class GeoLocation {
     this.setTimeZone(timeZoneId);
   }
 
+  /**
+   * @private
+   * @see #getLatitude()
+   * @see #setLatitude(double)
+   * @see #setLatitude(int, int, double, String)
+   */
+  private latitude!: number;
+
+  /**
+   * @private
+   * @see #getLongitude()
+   * @see #setLongitude(double)
+   * @see #setLongitude(int, int, double, String)
+   */
+  private longitude!: number;
+
+  /**
+   * @private
+   * @see #getLocationName()
+   * @see #setLocationName(String)
+   */
+  private locationName: string | null = null;
+
+  /**
+   * @private
+   * @see #getTimeZone()
+   * @see #setTimeZone(TimeZone)
+   */
+  private timeZoneId!: string;
+
+  /**
+   * @private
+   * @see #getElevation()
+   * @see #setElevation(double)
+   */
+  private elevation!: number;
+
+  /**
+   * Method to get the elevation in Meters.
+   *
+   * @return {number} Returns the elevation in Meters.
+   */
+  public getElevation(): number {
+    return this.elevation;
+  }
+
+  /**
+   * Method to set the elevation in Meters <b>above </b> sea level.
+   *
+   * @param {number} elevation
+   *            The elevation to set in Meters. An IllegalArgumentException will be thrown if the value is a negative.
+   */
+  public setElevation(elevation: number): void {
+    this.elevation = elevation;
+  }
+
   public setLatitude(latitude: number): void {
     this.latitude = latitude;
   }
 
   /**
-   * @return Returns the latitude.
+   * @return {number} Returns the latitude.
    */
   public getLatitude(): number {
     return this.latitude;
@@ -148,21 +172,21 @@ export class GeoLocation {
   }
 
   /**
-   * @return Returns the longitude.
+   * @return {number} Returns the longitude.
    */
   public getLongitude(): number {
     return this.longitude;
   }
 
   /**
-   * @return Returns the location name.
+   * @return {string|null} Returns the location name.
    */
   public getLocationName(): string | null {
     return this.locationName;
   }
 
   /**
-   * @param name
+   * @param {string|null} name
    *            The setter method for the display name.
    */
   public setLocationName(name: string | null): void {
@@ -170,7 +194,7 @@ export class GeoLocation {
   }
 
   /**
-   * @return Returns the timeZone.
+   * @return {string} Returns the timeZone.
    */
   public getTimeZone(): string {
     return this.timeZoneId;
@@ -184,7 +208,7 @@ export class GeoLocation {
    * AstronomicalCalendar to output times in the expected offset. This situation will arise if the
    * AstronomicalCalendar is ever {@link AstronomicalCalendar#clone() cloned}.
    *
-   * @param timeZone
+   * @param {string} timeZone
    *            The timeZone to set.
    */
   public setTimeZone(timeZoneId: string): void {
@@ -228,6 +252,22 @@ const earthRadius = 6356.9; // in KM
  */
 export class NOAACalculator {
   /**
+   * A constructor that takes in <a href="http://en.wikipedia.org/wiki/Geolocation">geolocation</a> information as a
+   * parameter. The default {@link AstronomicalCalculator#getDefault() AstronomicalCalculator} used for solar
+   * calculations is the the {@link NOAACalculator}.
+   *
+   * @param {GeoLocation} geoLocation
+   *            The location information used for calculating astronomical sun times.
+   * @param {Temporal.PlainDate} date
+   *
+   * @see #setAstronomicalCalculator(AstronomicalCalculator) for changing the calculator class.
+   */
+  constructor(geoLocation: GeoLocation, date: Temporal.PlainDate) {
+    this.date = date;
+    this.geoLocation = geoLocation;
+  }
+
+  /**
    * The zenith of astronomical sunrise and sunset. The sun is 90&deg; from the vertical 0&deg;
    * @private
    */
@@ -267,7 +307,7 @@ export class NOAACalculator {
    */
   private geoLocation!: GeoLocation;
   /**
-   * The getSunrise method Returns a <code>Date</code> representing the
+   * The getSunrise method Returns a `Date` representing the
    * {@link AstronomicalCalculator#getElevationAdjustment(double) elevation adjusted} sunrise time. The zenith used
    * for the calculation uses {@link #GEOMETRIC_ZENITH geometric zenith} of 90&deg; plus
    * {@link AstronomicalCalculator#getElevationAdjustment(double)}. This is adjusted by the
@@ -275,7 +315,7 @@ export class NOAACalculator {
    * and 16 archminutes for the sun's radius for a total of {@link AstronomicalCalculator#adjustZenith 90.83333&deg;}.
    * See documentation for the specific implementation of the {@link AstronomicalCalculator} that you are using.
    *
-   * @return the <code>Date</code> representing the exact sunrise time. If the calculation can't be computed such as
+   * @return {Temporal.ZonedDateTime | null} the `Date` representing the exact sunrise time. If the calculation can't be computed such as
    *         in the Arctic Circle where there is at least one day a year where the sun does not rise, and one where it
    *         does not set, a null will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalculator#adjustZenith
@@ -296,7 +336,7 @@ export class NOAACalculator {
    * something that is not affected by elevation. This method returns sunrise calculated at sea level. This forms the
    * base for dawn calculations that are calculated as a dip below the horizon before sunrise.
    *
-   * @return the <code>Date</code> representing the exact sea-level sunrise time. If the calculation can't be computed
+   * @return {Temporal.ZonedDateTime | null} the `Date` representing the exact sea-level sunrise time. If the calculation can't be computed
    *         such as in the Arctic Circle where there is at least one day a year where the sun does not rise, and one
    *         where it does not set, a null will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalendar#getSunrise
@@ -314,7 +354,7 @@ export class NOAACalculator {
   /**
    * A method that returns the beginning of civil twilight (dawn) using a zenith of {@link #CIVIL_ZENITH 96&deg;}.
    *
-   * @return The <code>Date</code> of the beginning of civil twilight using a zenith of 96&deg;. If the calculation
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the beginning of civil twilight using a zenith of 96&deg;. If the calculation
    *         can't be computed, null will be returned. See detailed explanation on top of the page.
    * @see #CIVIL_ZENITH
    */
@@ -325,7 +365,7 @@ export class NOAACalculator {
   /**
    * A method that returns the beginning of nautical twilight using a zenith of {@link #NAUTICAL_ZENITH 102&deg;}.
    *
-   * @return The <code>Date</code> of the beginning of nautical twilight using a zenith of 102&deg;. If the
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the beginning of nautical twilight using a zenith of 102&deg;. If the
    *         calculation can't be computed null will be returned. See detailed explanation on top of the page.
    * @see #NAUTICAL_ZENITH
    */
@@ -337,7 +377,7 @@ export class NOAACalculator {
    * A method that returns the beginning of astronomical twilight using a zenith of {@link #ASTRONOMICAL_ZENITH
    * 108&deg;}.
    *
-   * @return The <code>Date</code> of the beginning of astronomical twilight using a zenith of 108&deg;. If the
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the beginning of astronomical twilight using a zenith of 108&deg;. If the
    *         calculation can't be computed, null will be returned. See detailed explanation on top of the page.
    * @see #ASTRONOMICAL_ZENITH
    */
@@ -346,7 +386,7 @@ export class NOAACalculator {
   }
 
   /**
-   * The getSunset method Returns a <code>Date</code> representing the
+   * The getSunset method Returns a `Date` representing the
    * {@link AstronomicalCalculator#getElevationAdjustment(double) elevation adjusted} sunset time. The zenith used for
    * the calculation uses {@link #GEOMETRIC_ZENITH geometric zenith} of 90&deg; plus
    * {@link AstronomicalCalculator#getElevationAdjustment(double)}. This is adjusted by the
@@ -357,7 +397,7 @@ export class NOAACalculator {
    * other than the local timezone is used (calculating Los Angeles sunset using a GMT timezone for example). In this
    * case the sunset date will be incremented to the following date.
    *
-   * @return the <code>Date</code> representing the exact sunset time. If the calculation can't be computed such as in
+   * @return {Temporal.ZonedDateTime | null} The `Date` representing the exact sunset time. If the calculation can't be computed such as in
    *         the Arctic Circle where there is at least one day a year where the sun does not rise, and one where it
    *         does not set, a null will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalculator#adjustZenith
@@ -376,7 +416,7 @@ export class NOAACalculator {
    * something that is not affected by elevation. This method returns sunset calculated at sea level. This forms the
    * base for dusk calculations that are calculated as a dip below the horizon after sunset.
    *
-   * @return the <code>Date</code> representing the exact sea-level sunset time. If the calculation can't be computed
+   * @return {Temporal.ZonedDateTime | null} The `Date` representing the exact sea-level sunset time. If the calculation can't be computed
    *         such as in the Arctic Circle where there is at least one day a year where the sun does not rise, and one
    *         where it does not set, a null will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalendar#getSunset
@@ -393,7 +433,7 @@ export class NOAACalculator {
   /**
    * A method that returns the end of civil twilight using a zenith of {@link #CIVIL_ZENITH 96&deg;}.
    *
-   * @return The <code>Date</code> of the end of civil twilight using a zenith of {@link #CIVIL_ZENITH 96&deg;}. If
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the end of civil twilight using a zenith of {@link #CIVIL_ZENITH 96&deg;}. If
    *         the calculation can't be computed, null will be returned. See detailed explanation on top of the page.
    * @see #CIVIL_ZENITH
    */
@@ -404,7 +444,7 @@ export class NOAACalculator {
   /**
    * A method that returns the end of nautical twilight using a zenith of {@link #NAUTICAL_ZENITH 102&deg;}.
    *
-   * @return The <code>Date</code> of the end of nautical twilight using a zenith of {@link #NAUTICAL_ZENITH 102&deg;}
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the end of nautical twilight using a zenith of {@link #NAUTICAL_ZENITH 102&deg;}
    *         . If the calculation can't be computed, null will be returned. See detailed explanation on top of the
    *         page.
    * @see #NAUTICAL_ZENITH
@@ -416,7 +456,7 @@ export class NOAACalculator {
   /**
    * A method that returns the end of astronomical twilight using a zenith of {@link #ASTRONOMICAL_ZENITH 108&deg;}.
    *
-   * @return the <code>Date</code> of the end of astronomical twilight using a zenith of {@link #ASTRONOMICAL_ZENITH
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the end of astronomical twilight using a zenith of {@link #ASTRONOMICAL_ZENITH
    *         108&deg;}. If the calculation can't be computed, null will be returned. See detailed explanation on top
    *         of the page.
    * @see #ASTRONOMICAL_ZENITH
@@ -431,11 +471,11 @@ export class NOAACalculator {
    * after sunset with the intent of getting a rough "level of light" calculation, the sunrise or sunset time passed
    * to this method should be sea level sunrise and sunset.
    *
-   * @param time
+   * @param {Temporal.ZonedDateTime | null} time
    *            the start time
-   * @param offset
+   * @param {number} offset
    *            the offset in milliseconds to add to the time.
-   * @return the {@link java.util.Date} with the offset in milliseconds added to it
+   * @return {Temporal.ZonedDateTime | null} the `Date` with the offset in milliseconds added to it
    */
   public static getTimeOffset(
     time: Temporal.ZonedDateTime | null,
@@ -453,12 +493,12 @@ export class NOAACalculator {
    * {@link #getSunrise() sunrise}. Note that the degree offset is from the vertical, so for a calculation of 14&deg;
    * before sunrise, an offset of 14 + {@link #GEOMETRIC_ZENITH} = 104 would have to be passed as a parameter.
    *
-   * @param offsetZenith
+   * @param {number} offsetZenith
    *            the degrees before {@link #getSunrise()} to use in the calculation. For time after sunrise use
    *            negative numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg;
    *            before sunrise, an offset of 14 + {@link #GEOMETRIC_ZENITH} = 104 would have to be passed as a
    *            parameter.
-   * @return The {@link java.util.Date} of the offset after (or before) {@link #getSunrise()}. If the calculation
+   * @return {Temporal.ZonedDateTime | null} The `Date` of the offset after (or before) {@link #getSunrise()}. If the calculation
    *         can't be computed such as in the Arctic Circle where there is at least one day a year where the sun does
    *         not rise, and one where it does not set, a null will be returned. See detailed explanation on top of the
    *         page.
@@ -476,11 +516,11 @@ export class NOAACalculator {
    * sunset}. Note that the degree offset is from the vertical, so for a calculation of 14&deg; after sunset, an
    * offset of 14 + {@link #GEOMETRIC_ZENITH} = 104 would have to be passed as a parameter.
    *
-   * @param offsetZenith
+   * @param {number} offsetZenith
    *            the degrees after {@link #getSunset()} to use in the calculation. For time before sunset use negative
    *            numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg; after
    *            sunset, an offset of 14 + {@link #GEOMETRIC_ZENITH} = 104 would have to be passed as a parameter.
-   * @return The {@link java.util.Date}of the offset after (or before) {@link #getSunset()}. If the calculation can't
+   * @return {Temporal.ZonedDateTime | null} The `Date`of the offset after (or before) {@link #getSunset()}. If the calculation can't
    *         be computed such as in the Arctic Circle where there is at least one day a year where the sun does not
    *         rise, and one where it does not set, a null will be returned. See detailed explanation on top of the
    *         page.
@@ -494,27 +534,12 @@ export class NOAACalculator {
   }
 
   /**
-   * A constructor that takes in <a href="http://en.wikipedia.org/wiki/Geolocation">geolocation</a> information as a
-   * parameter. The default {@link AstronomicalCalculator#getDefault() AstronomicalCalculator} used for solar
-   * calculations is the the {@link NOAACalculator}.
-   *
-   * @param geoLocation
-   *            The location information used for calculating astronomical sun times.
-   *
-   * @see #setAstronomicalCalculator(AstronomicalCalculator) for changing the calculator class.
-   */
-  constructor(geoLocation: GeoLocation, date: Temporal.PlainDate) {
-    this.date = date;
-    this.geoLocation = geoLocation;
-  }
-
-  /**
    * A method that returns the sunrise in UTC time without correction for time zone offset from GMT and without using
    * daylight savings time.
    *
-   * @param zenith
+   * @param {number} zenith
    *            the degrees below the horizon. For time after sunrise use negative numbers.
-   * @return The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
+   * @return {number} The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
    *         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
    *         not set, {@link Double#NaN} will be returned. See detailed explanation on top of the page.
    */
@@ -533,9 +558,9 @@ export class NOAACalculator {
    * light, something that is not affected by elevation. This method returns UTC sunrise calculated at sea level. This
    * forms the base for dawn calculations that are calculated as a dip below the horizon before sunrise.
    *
-   * @param zenith
+   * @param {number} zenith
    *            the degrees below the horizon. For time after sunrise use negative numbers.
-   * @return The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
+   * @return {number} The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
    *         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
    *         not set, {@link Double#NaN} will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalendar#getUTCSunrise
@@ -554,9 +579,9 @@ export class NOAACalculator {
    * A method that returns the sunset in UTC time without correction for time zone offset from GMT and without using
    * daylight savings time.
    *
-   * @param zenith
+   * @param {number} zenith
    *            the degrees below the horizon. For time after sunset use negative numbers.
-   * @return The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
+   * @return {number} The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
    *         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
    *         not set, {@link Double#NaN} will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalendar#getUTCSeaLevelSunset
@@ -577,9 +602,9 @@ export class NOAACalculator {
    * at sea level. This forms the base for dusk calculations that are calculated as a dip below the horizon after
    * sunset.
    *
-   * @param zenith
+   * @param {number} zenith
    *            the degrees below the horizon. For time before sunset use negative numbers.
-   * @return The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
+   * @return {number} The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
    *         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
    *         not set, {@link Double#NaN} will be returned. See detailed explanation on top of the page.
    * @see AstronomicalCalendar#getUTCSunset
@@ -625,9 +650,9 @@ export class NOAACalculator {
    * elevationAdjustment = 0.0347 * Math.sqrt(elevationMeters);
    * </pre>
    *
-   * @param elevation
+   * @param {number} elevation
    *            elevation in Meters.
-   * @return the adjusted zenith
+   * @return {number} the adjusted zenith
    */
   public getElevationAdjustment(elevation: number): number {
     // double elevationAdjustment = 0.0347 * Math.sqrt(elevation);
@@ -657,20 +682,20 @@ export class NOAACalculator {
    * {@link ZmanimCalendar#ZENITH_16_POINT_1 16.1&deg;} dip used in
    * {@link ComplexZmanimCalendar#getAlos16Point1Degrees()}.
    *
-   * @param zenith
+   * @param {number} zenith
    *            the azimuth below the vertical zenith of 90&deg;. For sunset typically the {@link #adjustZenith
    *            zenith} used for the calculation uses geometric zenith of 90&deg; and {@link #adjustZenith adjusts}
    *            this slightly to account for solar refraction and the sun's radius. Another example would be
    *            {@link AstronomicalCalendar#getEndNauticalTwilight()} that passes
    *            {@link AstronomicalCalendar#NAUTICAL_ZENITH} to this method.
-   * @param elevation
+   * @param {number} elevation
    *            elevation in Meters.
-   * @return The zenith adjusted to include the {@link #getSolarRadius sun's radius}, {@link #getRefraction
+   * @return {number} The zenith adjusted to include the {@link #getSolarRadius sun's radius}, {@link #getRefraction
    *         refraction} and {@link #getElevationAdjustment elevation} adjustment. This will only be adjusted for
    *         sunrise and sunset (if the zenith == 90&deg;)
    * @see #getElevationAdjustment(double)
    */
-  public adjustZenith(zenith: number, elevation: number) {
+  public adjustZenith(zenith: number, elevation: number): number {
     let adjustedZenith: number = zenith;
     if (zenith === NOAACalculator.GEOMETRIC_ZENITH) {
       // only adjust if it is exactly sunrise or sunset
@@ -763,25 +788,25 @@ export class NOAACalculator {
    * non-elevation adjusted temporal hour by passing in {@link #getSeaLevelSunrise() sea level sunrise} and
    * {@link #getSeaLevelSunset() sea level sunset} as parameters.
    *
-   * @param startOfday
+   * @param {Temporal.ZonedDateTime | null} startOfDay
    *            The start of the day.
-   * @param endOfDay
+   * @param {Temporal.ZonedDateTime | null} endOfDay
    *            The end of the day.
    *
-   * @return the <code>long</code> millisecond length of the temporal hour. If the calculation can't be computed a
+   * @return {number} the <code>long</code> millisecond length of the temporal hour. If the calculation can't be computed a
    *         {@link Long#MIN_VALUE} will be returned. See detailed explanation on top of the page.
    *
    * @see #getTemporalHour()
    */
   public getTemporalHour(
-    startOfday: Temporal.ZonedDateTime | null = this.getSeaLevelSunrise(),
+    startOfDay: Temporal.ZonedDateTime | null = this.getSeaLevelSunrise(),
     endOfDay: Temporal.ZonedDateTime | null = this.getSeaLevelSunset()
   ): number {
-    if (startOfday === null || endOfDay === null) {
+    if (startOfDay === null || endOfDay === null) {
       return Long_MIN_VALUE;
     }
     const delta: number =
-      endOfDay.epochMilliseconds - startOfday.epochMilliseconds;
+      endOfDay.epochMilliseconds - startOfDay.epochMilliseconds;
     return Math.floor(delta / 12);
   }
 
@@ -792,14 +817,14 @@ export class NOAACalculator {
    * calculated as halfway between the sunrise and sunset passed to this method. This time can be slightly off the
    * real transit time due to changes in declination (the lengthening or shortening day).
    *
-   * @param startOfDay
+   * @param {Temporal.ZonedDateTime | null} startOfDay
    *            the start of day for calculating the sun's transit. This can be sea level sunrise, visual sunrise (or
    *            any arbitrary start of day) passed to this method.
-   * @param endOfDay
+   * @param {Temporal.ZonedDateTime | null} endOfDay
    *            the end of day for calculating the sun's transit. This can be sea level sunset, visual sunset (or any
    *            arbitrary end of day) passed to this method.
    *
-   * @return the <code>Date</code> representing Sun's transit. If the calculation can't be computed such as in the
+   * @return {Temporal.ZonedDateTime | null} The `Date` representing Sun's transit. If the calculation can't be computed such as in the
    *         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
    *         not set, null will be returned. See detailed explanation on top of the page.
    */
@@ -812,13 +837,13 @@ export class NOAACalculator {
   }
 
   /**
-   * A method that returns a <code>Date</code> from the time passed in as a parameter.
+   * A method that returns a `Date` from the time passed in as a parameter.
    * @protected
-   * @param time
-   *            The time to be set as the time for the <code>Date</code>. The time expected is in the format: 18.75
+   * @param {number} time
+   *            The time to be set as the time for the `Date`. The time expected is in the format: 18.75
    *            for 6:45:00 PM.
-   * @param isSunrise true if the time is sunrise, and false if it is sunset
-   * @return The Date.
+   * @param {boolean} isSunrise true if the time is sunrise, and false if it is sunset
+   * @return {Temporal.ZonedDateTime | null} The Date.
    */
   protected getDateFromTime(
     time: number,
@@ -867,7 +892,7 @@ export class NOAACalculator {
   /**
    * Return the <a href="http://en.wikipedia.org/wiki/Julian_day">Julian day</a> from a Java Calendar
    * @private
-   * @param calendar
+   * @param {Temporal.ZonedDateTime} date
    *            The Java Calendar
    * @return the Julian day corresponding to the date Note: Number is returned for start of day. Fractional days
    *         should be added later.
@@ -1117,11 +1142,11 @@ export class NOAACalculator {
    * Return the <a href="http://en.wikipedia.org/wiki/Hour_angle">hour angle</a> of the sun at sunrise for the
    * latitude.
    * @private
-   * @param lat
+   * @param {number} lat
    *            , the latitude of observer in degrees
    * @param solarDec
    *            the declination angle of sun in degrees
-   * @param zenith
+   * @param {number} zenith
    *            the zenith
    * @return hour angle of sunrise in radians
    */
@@ -1145,11 +1170,11 @@ export class NOAACalculator {
    * latitude. TODO: use - {@link #getSunHourAngleAtSunrise(double, double, double)} implementation to avoid
    * duplication of code.
    * @private
-   * @param lat
+   * @param {number} lat
    *            the latitude of observer in degrees
    * @param solarDec
    *            the declination angle of sun in degrees
-   * @param zenith
+   * @param {number} zenith
    *            the zenith
    * @return the hour angle of sunset in radians
    */
@@ -1174,13 +1199,13 @@ export class NOAACalculator {
    * horizontal coordinate system at the given location at the given time. Can be negative if the sun is below the
    * horizon. Not corrected for altitude.
    *
-   * @param cal
+   * @param {Temporal.ZonedDateTime} date
    *            time of calculation
-   * @param lat
+   * @param {number} lat
    *            latitude of location for calculation
-   * @param lon
+   * @param {number} lon
    *            longitude of location for calculation
-   * @return solar elevation in degrees - horizon is 0 degrees, civil twilight is -6 degrees
+   * @return {number} solar elevation in degrees - horizon is 0 degrees, civil twilight is -6 degrees
    */
   public static getSolarElevation(
     date: Temporal.ZonedDateTime,
@@ -1216,13 +1241,13 @@ export class NOAACalculator {
    * horizontal coordinate system at the given location at the given time. Not corrected for altitude. True south is 0
    * degrees.
    *
-   * @param cal
+   * @param {Temporal.ZonedDateTime} date
    *            time of calculation
-   * @param latitude
+   * @param {number} latitude
    *            latitude of location for calculation
-   * @param lon
+   * @param {number} lon
    *            longitude of location for calculation
-   * @return FIXME
+   * @return {number}
    */
   public static getSolarAzimuth(
     date: Temporal.ZonedDateTime,
@@ -1263,11 +1288,11 @@ export class NOAACalculator {
    * @private
    * @param julianDay
    *            the Julian day
-   * @param latitude
+   * @param {number} latitude
    *            the latitude of observer in degrees
-   * @param longitude
+   * @param {number} longitude
    *            the longitude of observer in degrees
-   * @param zenith
+   * @param {number} zenith
    *            the zenith
    * @return the time in minutes from zero UTC
    */
@@ -1331,7 +1356,7 @@ export class NOAACalculator {
    * @private
    * @param julianCenturies
    *            the number of Julian centuries since J2000.0
-   * @param longitude
+   * @param {number} longitude
    *            the longitude of observer in degrees
    * @return the time in minutes from zero UTC
    */
@@ -1363,11 +1388,11 @@ export class NOAACalculator {
    * @private
    * @param julianDay
    *            the Julian day
-   * @param latitude
+   * @param {number} latitude
    *            the latitude of observer in degrees
-   * @param longitude
+   * @param {number} longitude
    *            : longitude of observer in degrees
-   * @param zenith
+   * @param {number} zenith
    *            the zenith
    * @return the time in minutes from zero Universal Coordinated Time (UTC)
    */
