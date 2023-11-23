@@ -157,6 +157,10 @@ export class GeoLocation {
   }
 
   public setLatitude(latitude: number): void {
+    if (typeof latitude !== 'number') throw new TypeError('Invalid latitude');
+    if (latitude < -90 || latitude > 90) {
+      throw new RangeError(`Latitude ${latitude} out of range [-90,90]`);
+    }
     this.latitude = latitude;
   }
 
@@ -168,6 +172,10 @@ export class GeoLocation {
   }
 
   public setLongitude(longitude: number): void {
+    if (typeof longitude !== 'number') throw new TypeError('Invalid longitude');
+    if (longitude < -180 || longitude > 180) {
+      throw new RangeError(`Longitude ${longitude} out of range [-180,180]`);
+    }
     this.longitude = longitude;
   }
 
