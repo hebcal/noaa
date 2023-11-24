@@ -66,7 +66,7 @@ GeoLocation constructor with parameters for all required fields.
 | --- | --- | --- |
 | name | <code>string</code> | The location name for display use such as &quot;Lakewood, NJ&quot; |
 | latitude | <code>number</code> | the latitude in a double format such as 40.095965 for Lakewood, NJ.            <b>Note: </b> For latitudes south of the equator, a negative value should be used. |
-| longitude | <code>number</code> | double the longitude in a double format such as -74.222130 for Lakewood, NJ.            <b>Note: </b> For longitudes east of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime            Meridian </a> (Greenwich), a negative value should be used. |
+| longitude | <code>number</code> | double the longitude in a double format such as -74.222130 for Lakewood, NJ.            <b>Note: </b> For longitudes west of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime            Meridian </a> (Greenwich), a negative value should be used. |
 | elevation | <code>number</code> | the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating            sunrise and set. |
 | timeZoneId | <code>string</code> | the <code>TimeZone</code> for the location. |
 

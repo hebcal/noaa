@@ -40,7 +40,7 @@ export class GeoLocation {
    *            <b>Note: </b> For latitudes south of the equator, a negative value should be used.
    * @param {number} longitude
    *            double the longitude in a double format such as -74.222130 for Lakewood, NJ.
-   *            <b>Note: </b> For longitudes east of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
+   *            <b>Note: </b> For longitudes west of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
    *            Meridian </a> (Greenwich), a negative value should be used.
    * @param {number} elevation
    *            the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating
@@ -71,7 +71,7 @@ export class GeoLocation {
    *            <b>Note: </b> For latitudes south of the equator, a negative value should be used.
    * @param {number} longitude
    *            double the longitude in a double format such as -74.222130 for Lakewood, NJ.
-   *            <b>Note: </b> For longitudes east of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
+   *            <b>Note: </b> For longitudes west of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
    *            Meridian </a> (Greenwich), a negative value should be used.
    * @param {number} elevation
    *            the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating
