@@ -1,4 +1,8 @@
-import {Temporal} from 'temporal-polyfill';
+(async () => {
+  if (typeof Temporal !== 'function') {
+    await import('temporal-polyfill/global');
+  }
+})();
 
 /**
  * java.lang.Math.toRadians
