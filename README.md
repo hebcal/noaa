@@ -16,9 +16,7 @@ $ npm install @hebcal/noaa
 <dl>
 <dt><a href="#GeoLocation">GeoLocation</a></dt>
 <dd><p>A class that contains location information such as latitude and longitude required for astronomical calculations. The
-elevation field may not be used by some calculation engines and would be ignored if set. Check the documentation for
-specific implementations of the <a href="AstronomicalCalculator">AstronomicalCalculator</a> to see if elevation is calculated as part of the
-algorithm.</p>
+elevation field may not be used by some calculation engines and would be ignored if set.</p>
 </dd>
 <dt><a href="#NOAACalculator">NOAACalculator</a></dt>
 <dd><p>Implementation of sunrise and sunset methods to calculate astronomical times based on the <a
@@ -37,9 +35,7 @@ href="http://en.wikipedia.org/wiki/Sunrise_equation">Wikipedia Sunrise Equation<
 
 ## GeoLocation
 A class that contains location information such as latitude and longitude required for astronomical calculations. The
-elevation field may not be used by some calculation engines and would be ignored if set. Check the documentation for
-specific implementations of the [AstronomicalCalculator](AstronomicalCalculator) to see if elevation is calculated as part of the
-algorithm.
+elevation field may not be used by some calculation engines and would be ignored if set.
 
 **Kind**: global class  
 **Version**: 1.1  
@@ -54,7 +50,7 @@ algorithm.
     * [.getLocationName()](#GeoLocation+getLocationName) ⇒ <code>string</code> \| <code>null</code>
     * [.setLocationName(name)](#GeoLocation+setLocationName)
     * [.getTimeZone()](#GeoLocation+getTimeZone) ⇒ <code>string</code>
-    * [.setTimeZone(timeZone)](#GeoLocation+setTimeZone)
+    * [.setTimeZone(timeZoneId)](#GeoLocation+setTimeZone)
 
 <a name="new_GeoLocation_new"></a>
 
@@ -86,7 +82,7 @@ Method to set the elevation in Meters <b>above </b> sea level.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| elevation | <code>number</code> | The elevation to set in Meters. An IllegalArgumentException will be thrown if the value is a negative. |
+| elevation | <code>number</code> | The elevation to set in Meters. An Error will be thrown if the value is a negative. |
 
 <a name="GeoLocation+getLatitude"></a>
 
@@ -119,19 +115,14 @@ Method to set the elevation in Meters <b>above </b> sea level.
 **Returns**: <code>string</code> - Returns the timeZone.  
 <a name="GeoLocation+setTimeZone"></a>
 
-### geoLocation.setTimeZone(timeZone)
-Method to set the TimeZone. If this is ever set after the GeoLocation is set in the
-[AstronomicalCalendar](AstronomicalCalendar), it is critical that
-[AstronomicalCalendar#getCalendar()](AstronomicalCalendar#getCalendar()).
-[setTimeZone(TimeZone)](java.util.Calendar#setTimeZone(TimeZone)) be called in order for the
-AstronomicalCalendar to output times in the expected offset. This situation will arise if the
-AstronomicalCalendar is ever [cloned](AstronomicalCalendar#clone()).
+### geoLocation.setTimeZone(timeZoneId)
+Method to set the TimeZone.
 
 **Kind**: instance method of [<code>GeoLocation</code>](#GeoLocation)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| timeZone | <code>string</code> | The timeZone to set. |
+| timeZoneId | <code>string</code> | The timeZone to set. |
 
 <a name="NOAACalculator"></a>
 
@@ -147,7 +138,6 @@ to account for elevation. The algorithm can be found in the <a
 href="http://en.wikipedia.org/wiki/Sunrise_equation">Wikipedia Sunrise Equation</a> article.
 
 **Kind**: global class  
-**See**: #setAstronomicalCalculator(AstronomicalCalculator) for changing the calculator class.  
 **Author**: &copy; Eliyahu Hershfeld 2011 - 2019  
 
 * [NOAACalculator](#NOAACalculator)
@@ -171,8 +161,8 @@ href="http://en.wikipedia.org/wiki/Sunrise_equation">Wikipedia Sunrise Equation<
         * [.getUTCSeaLevelSunset(zenith)](#NOAACalculator+getUTCSeaLevelSunset) ⇒ <code>number</code>
         * [.getElevationAdjustment(elevation)](#NOAACalculator+getElevationAdjustment) ⇒ <code>number</code>
         * [.adjustZenith(zenith, elevation)](#NOAACalculator+adjustZenith) ⇒ <code>number</code>
-        * [.getUTCSunrise()](#NOAACalculator+getUTCSunrise)
-        * [.getUTCSunset()](#NOAACalculator+getUTCSunset)
+        * [.getUTCSunrise(date, geoLocation, zenith, adjustForElevation)](#NOAACalculator+getUTCSunrise) ⇒
+        * [.getUTCSunset(date, geoLocation, zenith, adjustForElevation)](#NOAACalculator+getUTCSunset) ⇒
         * [.getTemporalHour(startOfDay, endOfDay)](#NOAACalculator+getTemporalHour) ⇒ <code>number</code>
         * [.getSunTransit(startOfDay, endOfDay)](#NOAACalculator+getSunTransit) ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
         * [.getDateFromTime(time, isSunrise)](#NOAACalculator+getDateFromTime) ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
@@ -188,8 +178,7 @@ href="http://en.wikipedia.org/wiki/Sunrise_equation">Wikipedia Sunrise Equation<
 
 ### new NOAACalculator(geoLocation, date)
 A constructor that takes in <a href="http://en.wikipedia.org/wiki/Geolocation">geolocation</a> information as a
-parameter. The default [AstronomicalCalculator](AstronomicalCalculator#getDefault()) used for solar
-calculations is the the [NOAACalculator](#NOAACalculator).
+parameter.
 
 
 | Param | Type | Description |
@@ -201,12 +190,11 @@ calculations is the the [NOAACalculator](#NOAACalculator).
 
 ### noaaCalculator.getSunrise() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
 The getSunrise method Returns a `Date` representing the
-[elevation adjusted](AstronomicalCalculator#getElevationAdjustment(double)) sunrise time. The zenith used
-for the calculation uses [geometric zenith](#GEOMETRIC_ZENITH) of 90&deg; plus
-[AstronomicalCalculator#getElevationAdjustment(double)](AstronomicalCalculator#getElevationAdjustment(double)). This is adjusted by the
-[AstronomicalCalculator](AstronomicalCalculator) to add approximately 50/60 of a degree to account for 34 archminutes of refraction
-and 16 archminutes for the sun's radius for a total of [90.83333&deg;](AstronomicalCalculator#adjustZenith).
-See documentation for the specific implementation of the [AstronomicalCalculator](AstronomicalCalculator) that you are using.
+[elevation adjusted](getElevationAdjustment) sunrise time. The zenith used
+for the calculation uses [geometric zenith](GEOMETRIC_ZENITH) of 90&deg; plus
+[getElevationAdjustment](getElevationAdjustment). This is adjusted
+to add approximately 50/60 of a degree to account for 34 archminutes of refraction
+and 16 archminutes for the sun's radius for a total of [90.83333&deg;](adjustZenith).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - the `Date` representing the exact sunrise time. If the calculation can't be computed such as
@@ -214,15 +202,15 @@ See documentation for the specific implementation of the [AstronomicalCalculator
         does not set, a null will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalculator#adjustZenith
-- #getSeaLevelSunrise()
-- AstronomicalCalendar#getUTCSunrise
+- adjustZenith
+- getSeaLevelSunrise()
+- getUTCSunrise
 
 <a name="NOAACalculator+getSeaLevelSunrise"></a>
 
 ### noaaCalculator.getSeaLevelSunrise() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
 A method that returns the sunrise without [elevation
-adjustment](AstronomicalCalculator#getElevationAdjustment(double)). Non-sunrise and sunset calculations such as dawn and dusk, depend on the amount of visible light,
+adjustment](getElevationAdjustment). Non-sunrise and sunset calculations such as dawn and dusk, depend on the amount of visible light,
 something that is not affected by elevation. This method returns sunrise calculated at sea level. This forms the
 base for dawn calculations that are calculated as a dip below the horizon before sunrise.
 
@@ -232,47 +220,47 @@ base for dawn calculations that are calculated as a dip below the horizon before
         where it does not set, a null will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalendar#getSunrise
-- AstronomicalCalendar#getUTCSeaLevelSunrise
-- #getSeaLevelSunset()
+- getSunrise
+- getUTCSeaLevelSunrise
+- getSeaLevelSunset()
 
 <a name="NOAACalculator+getBeginCivilTwilight"></a>
 
 ### noaaCalculator.getBeginCivilTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the beginning of civil twilight (dawn) using a zenith of [96&deg;](#CIVIL_ZENITH).
+A method that returns the beginning of civil twilight (dawn) using a zenith of [96&deg;](CIVIL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the beginning of civil twilight using a zenith of 96&deg;. If the calculation
         can't be computed, null will be returned. See detailed explanation on top of the page.  
-**See**: #CIVIL_ZENITH  
+**See**: CIVIL_ZENITH  
 <a name="NOAACalculator+getBeginNauticalTwilight"></a>
 
 ### noaaCalculator.getBeginNauticalTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the beginning of nautical twilight using a zenith of [102&deg;](#NAUTICAL_ZENITH).
+A method that returns the beginning of nautical twilight using a zenith of [102&deg;](NAUTICAL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the beginning of nautical twilight using a zenith of 102&deg;. If the
         calculation can't be computed null will be returned. See detailed explanation on top of the page.  
-**See**: #NAUTICAL_ZENITH  
+**See**: NAUTICAL_ZENITH  
 <a name="NOAACalculator+getBeginAstronomicalTwilight"></a>
 
 ### noaaCalculator.getBeginAstronomicalTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the beginning of astronomical twilight using a zenith of [108&deg;](#ASTRONOMICAL_ZENITH).
+A method that returns the beginning of astronomical twilight using a zenith of [108&deg;](ASTRONOMICAL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the beginning of astronomical twilight using a zenith of 108&deg;. If the
         calculation can't be computed, null will be returned. See detailed explanation on top of the page.  
-**See**: #ASTRONOMICAL_ZENITH  
+**See**: ASTRONOMICAL_ZENITH  
 <a name="NOAACalculator+getSunset"></a>
 
 ### noaaCalculator.getSunset() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
 The getSunset method Returns a `Date` representing the
-[elevation adjusted](AstronomicalCalculator#getElevationAdjustment(double)) sunset time. The zenith used for
-the calculation uses [geometric zenith](#GEOMETRIC_ZENITH) of 90&deg; plus
-[AstronomicalCalculator#getElevationAdjustment(double)](AstronomicalCalculator#getElevationAdjustment(double)). This is adjusted by the
-[AstronomicalCalculator](AstronomicalCalculator) to add approximately 50/60 of a degree to account for 34 archminutes of refraction
-and 16 archminutes for the sun's radius for a total of [90.83333&deg;](AstronomicalCalculator#adjustZenith).
-See documentation for the specific implementation of the [AstronomicalCalculator](AstronomicalCalculator) that you are using. Note:
+[elevation adjusted](getElevationAdjustment) sunset time. The zenith used for
+the calculation uses [geometric zenith](GEOMETRIC_ZENITH) of 90&deg; plus
+[getElevationAdjustment](getElevationAdjustment). This is adjusted
+to add approximately 50/60 of a degree to account for 34 archminutes of refraction
+and 16 archminutes for the sun's radius for a total of [90.83333&deg;](adjustZenith).
+Note:
 In certain cases the calculates sunset will occur before sunrise. This will typically happen when a timezone
 other than the local timezone is used (calculating Los Angeles sunset using a GMT timezone for example). In this
 case the sunset date will be incremented to the following date.
@@ -283,15 +271,15 @@ case the sunset date will be incremented to the following date.
         does not set, a null will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalculator#adjustZenith
-- #getSeaLevelSunset()
-- AstronomicalCalendar#getUTCSunset
+- adjustZenith
+- getSeaLevelSunset()
+- getUTCSunset
 
 <a name="NOAACalculator+getSeaLevelSunset"></a>
 
 ### noaaCalculator.getSeaLevelSunset() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
 A method that returns the sunset without [elevation
-adjustment](AstronomicalCalculator#getElevationAdjustment(double)). Non-sunrise and sunset calculations such as dawn and dusk, depend on the amount of visible light,
+adjustment](getElevationAdjustment). Non-sunrise and sunset calculations such as dawn and dusk, depend on the amount of visible light,
 something that is not affected by elevation. This method returns sunset calculated at sea level. This forms the
 base for dusk calculations that are calculated as a dip below the horizon after sunset.
 
@@ -301,69 +289,69 @@ base for dusk calculations that are calculated as a dip below the horizon after 
         where it does not set, a null will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalendar#getSunset
-- AstronomicalCalendar#getUTCSeaLevelSunset 2see [#getSunset()](#getSunset())
+- getSunset
+- getUTCSeaLevelSunset
 
 <a name="NOAACalculator+getEndCivilTwilight"></a>
 
 ### noaaCalculator.getEndCivilTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the end of civil twilight using a zenith of [96&deg;](#CIVIL_ZENITH).
+A method that returns the end of civil twilight using a zenith of [96&deg;](CIVIL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of civil twilight using a zenith of [96&deg;](#CIVIL_ZENITH). If
+**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of civil twilight using a zenith of [96&deg;](CIVIL_ZENITH). If
         the calculation can't be computed, null will be returned. See detailed explanation on top of the page.  
-**See**: #CIVIL_ZENITH  
+**See**: CIVIL_ZENITH  
 <a name="NOAACalculator+getEndNauticalTwilight"></a>
 
 ### noaaCalculator.getEndNauticalTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the end of nautical twilight using a zenith of [102&deg;](#NAUTICAL_ZENITH).
+A method that returns the end of nautical twilight using a zenith of [102&deg;](NAUTICAL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of nautical twilight using a zenith of [102&deg;](#NAUTICAL_ZENITH)
+**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of nautical twilight using a zenith of [102&deg;](NAUTICAL_ZENITH)
         . If the calculation can't be computed, null will be returned. See detailed explanation on top of the
         page.  
-**See**: #NAUTICAL_ZENITH  
+**See**: NAUTICAL_ZENITH  
 <a name="NOAACalculator+getEndAstronomicalTwilight"></a>
 
 ### noaaCalculator.getEndAstronomicalTwilight() ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A method that returns the end of astronomical twilight using a zenith of [108&deg;](#ASTRONOMICAL_ZENITH).
+A method that returns the end of astronomical twilight using a zenith of [108&deg;](ASTRONOMICAL_ZENITH).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of astronomical twilight using a zenith of [108&deg;](#ASTRONOMICAL_ZENITH). If the calculation can't be computed, null will be returned. See detailed explanation on top
+**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the end of astronomical twilight using a zenith of [108&deg;](ASTRONOMICAL_ZENITH). If the calculation can't be computed, null will be returned. See detailed explanation on top
         of the page.  
-**See**: #ASTRONOMICAL_ZENITH  
+**See**: ASTRONOMICAL_ZENITH  
 <a name="NOAACalculator+getSunriseOffsetByDegrees"></a>
 
 ### noaaCalculator.getSunriseOffsetByDegrees(offsetZenith) ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
 A utility method that returns the time of an offset by degrees below or above the horizon of
-[sunrise](#getSunrise()). Note that the degree offset is from the vertical, so for a calculation of 14&deg;
-before sunrise, an offset of 14 + [#GEOMETRIC_ZENITH](#GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter.
+[sunrise](getSunrise()). Note that the degree offset is from the vertical, so for a calculation of 14&deg;
+before sunrise, an offset of 14 + [GEOMETRIC_ZENITH](GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter.
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the offset after (or before) [#getSunrise()](#getSunrise()). If the calculation
+**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date` of the offset after (or before) [getSunrise](getSunrise). If the calculation
         can't be computed such as in the Arctic Circle where there is at least one day a year where the sun does
         not rise, and one where it does not set, a null will be returned. See detailed explanation on top of the
         page.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| offsetZenith | <code>number</code> | the degrees before [#getSunrise()](#getSunrise()) to use in the calculation. For time after sunrise use            negative numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg;            before sunrise, an offset of 14 + [#GEOMETRIC_ZENITH](#GEOMETRIC_ZENITH) = 104 would have to be passed as a            parameter. |
+| offsetZenith | <code>number</code> | the degrees before [getSunrise](getSunrise) to use in the calculation. For time after sunrise use            negative numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg;            before sunrise, an offset of 14 + [GEOMETRIC_ZENITH](GEOMETRIC_ZENITH) = 104 would have to be passed as a            parameter. |
 
 <a name="NOAACalculator+getSunsetOffsetByDegrees"></a>
 
 ### noaaCalculator.getSunsetOffsetByDegrees(offsetZenith) ⇒ <code>Temporal.ZonedDateTime</code> \| <code>null</code>
-A utility method that returns the time of an offset by degrees below or above the horizon of [sunset](#getSunset()). Note that the degree offset is from the vertical, so for a calculation of 14&deg; after sunset, an
-offset of 14 + [#GEOMETRIC_ZENITH](#GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter.
+A utility method that returns the time of an offset by degrees below or above the horizon of [sunset](getSunset()). Note that the degree offset is from the vertical, so for a calculation of 14&deg; after sunset, an
+offset of 14 + [GEOMETRIC_ZENITH](GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter.
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date`of the offset after (or before) [#getSunset()](#getSunset()). If the calculation can't
+**Returns**: <code>Temporal.ZonedDateTime</code> \| <code>null</code> - The `Date`of the offset after (or before) [getSunset](getSunset). If the calculation can't
         be computed such as in the Arctic Circle where there is at least one day a year where the sun does not
         rise, and one where it does not set, a null will be returned. See detailed explanation on top of the
         page.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| offsetZenith | <code>number</code> | the degrees after [#getSunset()](#getSunset()) to use in the calculation. For time before sunset use negative            numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg; after            sunset, an offset of 14 + [#GEOMETRIC_ZENITH](#GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter. |
+| offsetZenith | <code>number</code> | the degrees after [getSunset](getSunset) to use in the calculation. For time before sunset use negative            numbers. Note that the degree offset is from the vertical, so for a calculation of 14&deg; after            sunset, an offset of 14 + [GEOMETRIC_ZENITH](GEOMETRIC_ZENITH) = 104 would have to be passed as a parameter. |
 
 <a name="NOAACalculator+getUTCSunrise0"></a>
 
@@ -374,7 +362,7 @@ daylight savings time.
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>number</code> - The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
-        not set, [Double#NaN](Double#NaN) will be returned. See detailed explanation on top of the page.  
+        not set, `NaN` will be returned. See detailed explanation on top of the page.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -391,11 +379,11 @@ forms the base for dawn calculations that are calculated as a dip below the hori
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>number</code> - The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
-        not set, [Double#NaN](Double#NaN) will be returned. See detailed explanation on top of the page.  
+        not set, `NaN` will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalendar#getUTCSunrise
-- AstronomicalCalendar#getUTCSeaLevelSunset
+- getUTCSunrise
+- getUTCSeaLevelSunset
 
 
 | Param | Type | Description |
@@ -411,8 +399,8 @@ daylight savings time.
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>number</code> - The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
-        not set, [Double#NaN](Double#NaN) will be returned. See detailed explanation on top of the page.  
-**See**: AstronomicalCalendar#getUTCSeaLevelSunset  
+        not set, `NaN` will be returned. See detailed explanation on top of the page.  
+**See**: getUTCSeaLevelSunset  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -430,11 +418,11 @@ sunset.
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>number</code> - The time in the format: 18.75 for 18:45:00 UTC/GMT. If the calculation can't be computed such as in the
         Arctic Circle where there is at least one day a year where the sun does not rise, and one where it does
-        not set, [Double#NaN](Double#NaN) will be returned. See detailed explanation on top of the page.  
+        not set, `NaN` will be returned. See detailed explanation on top of the page.  
 **See**
 
-- AstronomicalCalendar#getUTCSunset
-- AstronomicalCalendar#getUTCSeaLevelSunrise
+- getUTCSunset
+- getUTCSeaLevelSunrise
 
 
 | Param | Type | Description |
@@ -447,9 +435,9 @@ sunset.
 Method to return the adjustment to the zenith required to account for the elevation. Since a person at a higher
 elevation can see farther below the horizon, the calculation for sunrise / sunset is calculated below the horizon
 used at sea level. This is only used for sunrise and sunset and not times before or after it such as
-[nautical twilight](AstronomicalCalendar#getBeginNauticalTwilight()) since those
+[nautical twilight](getBeginNauticalTwilight()) since those
 calculations are based on the level of available light at the given dip below the horizon, something that is not
-affected by elevation, the adjustment should only made if the zenith == 90&deg; [adjusted](#adjustZenith)
+affected by elevation, the adjustment should only made if the zenith == 90&deg; [adjusted](adjustZenith)
 for refraction and solar radius. The algorithm used is
 
 <pre>
@@ -481,50 +469,75 @@ Earth were without an atmosphere, true sunset and sunrise would correspond to a 
 is not a point, and because the atmosphere refracts light, this 90&deg; zenith does not, in fact, correspond to
 true sunset or sunrise, instead the centre of the Sun's disk must lie just below the horizon for the upper edge
 to be obscured. This means that a zenith of just above 90&deg; must be used. The Sun subtends an angle of 16
-minutes of arc (this can be changed via the [#setSolarRadius(double)](#setSolarRadius(double)) method , and atmospheric refraction
-accounts for 34 minutes or so (this can be changed via the [#setRefraction(double)](#setRefraction(double)) method), giving a total
+minutes of arc, and atmospheric refraction
+accounts for 34 minutes or so, giving a total
 of 50 arcminutes. The total value for ZENITH is 90+(5/6) or 90.8333333&deg; for true sunrise/sunset. Since a
 person at an elevation can see blow the horizon of a person at sea level, this will also adjust the zenith to
 account for elevation if available. Note that this will only adjust the value if the zenith is exactly 90 degrees.
 For values below and above this no correction is done. As an example, astronomical twilight is when the sun is
 18&deg; below the horizon or [108&deg;
-below the zenith](AstronomicalCalendar#ASTRONOMICAL_ZENITH). This is traditionally calculated with none of the above mentioned adjustments. The same goes
+below the zenith](ASTRONOMICAL_ZENITH). This is traditionally calculated with none of the above mentioned adjustments. The same goes
 for various <em>tzais</em> and <em>alos</em> times such as the
 [16.1&deg;](ZmanimCalendar#ZENITH_16_POINT_1) dip used in
-[ComplexZmanimCalendar#getAlos16Point1Degrees()](ComplexZmanimCalendar#getAlos16Point1Degrees()).
+[ComplexZmanimCalendar#getAlos16Point1Degrees](ComplexZmanimCalendar#getAlos16Point1Degrees).
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**Returns**: <code>number</code> - The zenith adjusted to include the [sun's radius](#getSolarRadius), [refraction](#getRefraction) and [elevation](#getElevationAdjustment) adjustment. This will only be adjusted for
+**Returns**: <code>number</code> - The zenith adjusted to include the sun's radius, refracton
+        and [elevation](getElevationAdjustment) adjustment. This will only be adjusted for
         sunrise and sunset (if the zenith == 90&deg;)  
-**See**: #getElevationAdjustment(double)  
+**See**: getElevationAdjustment  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| zenith | <code>number</code> | the azimuth below the vertical zenith of 90&deg;. For sunset typically the [zenith](#adjustZenith) used for the calculation uses geometric zenith of 90&deg; and [adjusts](#adjustZenith)            this slightly to account for solar refraction and the sun's radius. Another example would be            [AstronomicalCalendar#getEndNauticalTwilight()](AstronomicalCalendar#getEndNauticalTwilight()) that passes            [AstronomicalCalendar#NAUTICAL_ZENITH](AstronomicalCalendar#NAUTICAL_ZENITH) to this method. |
+| zenith | <code>number</code> | the azimuth below the vertical zenith of 90&deg;. For sunset typically the [zenith](adjustZenith) used for the calculation uses geometric zenith of 90&deg; and [adjusts](adjustZenith)            this slightly to account for solar refraction and the sun's radius. Another example would be            [getEndNauticalTwilight](getEndNauticalTwilight) that passes            [NAUTICAL_ZENITH](NAUTICAL_ZENITH) to this method. |
 | elevation | <code>number</code> | elevation in Meters. |
 
 <a name="NOAACalculator+getUTCSunrise"></a>
 
-### noaaCalculator.getUTCSunrise()
+### noaaCalculator.getUTCSunrise(date, geoLocation, zenith, adjustForElevation) ⇒
+A method that calculates UTC sunrise as well as any time based on an angle above or below sunrise.
+
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**See**: AstronomicalCalculator#getUTCSunrise(Calendar, GeoLocation, double, boolean)  
+**Returns**: The UTC time of sunrise in 24 hour format. 5:45:00 AM will return 5.75.0. If an error was encountered in
+        the calculation (expected behavior for some locations such as near the poles,
+        `NaN` will be returned.  
+
+| Param | Description |
+| --- | --- |
+| date | Used to calculate day of year. |
+| geoLocation | The location information used for astronomical calculating sun times. |
+| zenith | the azimuth below the vertical zenith of 90 degrees. for sunrise typically the [zenith](adjustZenith) used for the calculation uses geometric zenith of 90&deg; and [adjusts](adjustZenith)            this slightly to account for solar refraction and the sun's radius. Another example would be            [getBeginNauticalTwilight](getBeginNauticalTwilight) that passes            [NAUTICAL_ZENITH](NAUTICAL_ZENITH) to this method. |
+| adjustForElevation | Should the time be adjusted for elevation |
+
 <a name="NOAACalculator+getUTCSunset"></a>
 
-### noaaCalculator.getUTCSunset()
+### noaaCalculator.getUTCSunset(date, geoLocation, zenith, adjustForElevation) ⇒
+A method that calculates UTC sunset as well as any time based on an angle above or below sunset.
+
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
-**See**: AstronomicalCalculator#getUTCSunset(Calendar, GeoLocation, double, boolean)  
+**Returns**: The UTC time of sunset in 24 hour format. 5:45:00 AM will return 5.75.0. If an error was encountered in
+        the calculation (expected behavior for some locations such as near the poles,
+        `NaN` will be returned.  
+
+| Param | Description |
+| --- | --- |
+| date | Used to calculate day of year. |
+| geoLocation | The location information used for astronomical calculating sun times. |
+| zenith | the azimuth below the vertical zenith of 90&deg;. For sunset typically the [zenith](adjustZenith) used for the calculation uses geometric zenith of 90&deg; and [adjusts](adjustZenith)            this slightly to account for solar refraction and the sun's radius. Another example would be            [getEndNauticalTwilight](getEndNauticalTwilight) that passes            [NAUTICAL_ZENITH](NAUTICAL_ZENITH) to this method. |
+| adjustForElevation | Should the time be adjusted for elevation |
+
 <a name="NOAACalculator+getTemporalHour"></a>
 
 ### noaaCalculator.getTemporalHour(startOfDay, endOfDay) ⇒ <code>number</code>
 A utility method that will allow the calculation of a temporal (solar) hour based on the sunrise and sunset
 passed as parameters to this method. An example of the use of this method would be the calculation of a
-non-elevation adjusted temporal hour by passing in [sea level sunrise](#getSeaLevelSunrise()) and
-[sea level sunset](#getSeaLevelSunset()) as parameters.
+non-elevation adjusted temporal hour by passing in [sea level sunrise](getSeaLevelSunrise()) and
+[sea level sunset](getSeaLevelSunset()) as parameters.
 
 **Kind**: instance method of [<code>NOAACalculator</code>](#NOAACalculator)  
 **Returns**: <code>number</code> - the <code>long</code> millisecond length of the temporal hour. If the calculation can't be computed a
-        [Long#MIN_VALUE](Long#MIN_VALUE) will be returned. See detailed explanation on top of the page.  
-**See**: #getTemporalHour()  
+        `NaN` will be returned. See detailed explanation on top of the page.  
+**See**: getTemporalHour()  
 
 | Param | Type | Description |
 | --- | --- | --- |
