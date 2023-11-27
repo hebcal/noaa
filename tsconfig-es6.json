@@ -1,14 +1,13 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "module": "node16",
+    "module": "ES2022",
     "declaration": false,
-    "target": "es6",
+    "target": "ES2022",
     "sourceMap": false,
     "outDir": "dist/esm",
     "lib": ["ESNext"],
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "Node",
     "strict": true
   }
 }

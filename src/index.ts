@@ -1,8 +1,4 @@
-(async () => {
-  if (typeof Temporal !== 'function') {
-    await import('temporal-polyfill/global');
-  }
-})();
+import 'temporal-polyfill/global.js';
 
 /**
  * java.lang.Math.toRadians
@@ -59,12 +55,6 @@ export class GeoLocation {
     elevation: number,
     timeZoneId?: string
   );
-  constructor(
-    name: string | null,
-    latitude: number,
-    longitude: number,
-    timeZoneId: string
-  );
   /**
    * GeoLocation constructor with parameters for all required fields.
    *
@@ -77,12 +67,15 @@ export class GeoLocation {
    *            double the longitude in a double format such as -74.222130 for Lakewood, NJ.
    *            <b>Note: </b> For longitudes west of the <a href="http://en.wikipedia.org/wiki/Prime_Meridian">Prime
    *            Meridian </a> (Greenwich), a negative value should be used.
-   * @param {number} elevation
-   *            the elevation above sea level in Meters. Elevation is not used in most algorithms used for calculating
-   *            sunrise and set.
    * @param {string} timeZoneId
    *            the <code>TimeZone</code> for the location.
    */
+  constructor(
+    name: string | null,
+    latitude: number,
+    longitude: number,
+    timeZoneId: string
+  );
   constructor(
     name: string | null,
     latitude: number,
@@ -220,7 +213,7 @@ export class GeoLocation {
    * AstronomicalCalendar to output times in the expected offset. This situation will arise if the
    * AstronomicalCalendar is ever {@link AstronomicalCalendar#clone() cloned}.
    *
-   * @param {string} timeZone
+   * @param {string} timeZoneId
    *            The timeZone to set.
    */
   public setTimeZone(timeZoneId: string): void {

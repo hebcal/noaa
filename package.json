@@ -14,10 +14,17 @@
   },
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "dist/esm/index.js",
+      "require": "dist/cjs/index.cjs"
+    }
+  },
   "typings": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:es6 && npm run build:cjs && npm run build:types",
+    "build": "npm run build:es6 && npm run build:cjs && npm run build:types && mv dist/cjs/index.js dist/cjs/index.cjs",
     "build:cjs": "tsc",
     "build:es6": "tsc -p ./tsconfig-es6.json",
     "build:types": "tsc -p ./tsconfig-types.json",
@@ -42,7 +49,9 @@
   "devDependencies": {
     "@types/node": "20.10.0",
     "gts": "^5.2.0",
-    "temporal-polyfill": "^0.1.1",
     "typescript": "^5.3.2"
+  },
+  "peerDependencies": {
+    "temporal-polyfill": "^0.1.1"
   }
 }
