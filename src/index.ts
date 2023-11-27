@@ -1,4 +1,4 @@
-import 'temporal-polyfill/global.js';
+import { Temporal } from 'temporal-polyfill';
 
 /**
  * java.lang.Math.toRadians
