@@ -27,13 +27,10 @@
     "build": "npm run build:cjs && mv dist/index.js dist/index.cjs && npm run build:es6",
     "build:cjs": "tsc -p ./tsconfig-cjs.json",
     "build:es6": "tsc",
-    "lint": "gts lint",
     "clean": "gts clean",
-    "compile": "tsc",
     "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run lint"
+    "prepare": "npm run build",
+    "pretest": "npm run build"
   },
   "keywords": [
     "zmanim",
