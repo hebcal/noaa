@@ -1,13 +1,14 @@
 {
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "declaration": false,
+    "module": "ES2022",
+    "declaration": true,
+    "target": "ES2022",
     "sourceMap": false,
-    "outDir": "dist/cjs"
+    "outDir": "dist",
+    "lib": ["ESNext"],
+    "moduleResolution": "Node",
+    "strict": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ]
+  "exclude": ["dist"]
 }
