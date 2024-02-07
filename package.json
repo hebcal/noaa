@@ -1,6 +1,6 @@
 {
   "name": "@hebcal/noaa",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "description": "sunrise and sunset via NOAA algorithm with elevation, based on KosherJava",
   "author": "Michael J. Radwin (https://github.com/mjradwin)",
   "contributors": [
@@ -43,11 +43,11 @@
     "dist/*"
   ],
   "devDependencies": {
-    "@types/node": "20.10.4",
+    "@types/node": "20.11.16",
     "gts": "^5.2.0",
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
-    "temporal-polyfill": "^0.1.1"
+    "temporal-polyfill": "^0.2.1"
   }
 }
