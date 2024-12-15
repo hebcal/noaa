@@ -1,4 +1,4 @@
-import { Temporal } from 'temporal-polyfill';
+import 'temporal-polyfill/global';
 
 /**
  * java.lang.Math.toRadians
@@ -248,13 +248,13 @@ export class NOAACalculator {
    * The Java Calendar encapsulated by this class to track the current date used by the class
    * @private
    */
-  private date!: Temporal.PlainDate;
+  private date: Temporal.PlainDate;
 
   /**
    * the {@link GeoLocation} used for calculations.
    * @private
    */
-  private geoLocation!: GeoLocation;
+  private geoLocation: GeoLocation;
   /**
    * The getSunrise method Returns a `Date` representing the
    * {@link getElevationAdjustment elevation adjusted} sunrise time. The zenith used
