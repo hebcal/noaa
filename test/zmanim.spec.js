@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import test from 'ava';
 import {Temporal} from 'temporal-polyfill';
-import {GeoLocation, NOAACalculator} from '../dist/index.mjs';
+import {GeoLocation, NOAACalculator} from '../dist/index.js';
 
 // eslint-disable-next-line require-jsdoc
 function makeZmanWithElevation() {

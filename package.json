@@ -1,6 +1,6 @@
 {
   "name": "@hebcal/noaa",
-  "version": "0.8.16",
+  "version": "0.9.0",
   "description": "sunrise and sunset via NOAA algorithm with elevation, based on KosherJava",
   "author": "Michael J. Radwin (https://github.com/mjradwin)",
   "contributors": [
@@ -8,26 +8,25 @@
     "Eliyahu Hershfeld (https://github.com/KosherJava)",
     "Benny Powers (https://github.com/bennypowers)"
   ],
-  "license": "LGPL-3.0",
+  "license": "LGPL-2.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hebcal/noaa.git"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "bugs": {
+    "url": "https://github.com/hebcal/noaa/issues"
+  },
+  "homepage": "https://hebcal.github.io/api/noaa/",
+  "module": "dist/index.js",
   "typings": "dist/index.d.ts",
   "type": "module",
   "exports": {
-    "import": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
-    "types": "./dist/index.d.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "docs": "typedoc",
     "test": "ava",
-    "build": "npm run build:cjs && mv dist/index.js dist/index.cjs && npm run build:es6 && mv dist/index.js dist/index.mjs",
-    "build:cjs": "tsc -p ./tsconfig-cjs.json",
-    "build:es6": "tsc",
+    "build": "tsc",
     "clean": "gts clean",
     "fix": "gts fix",
     "prepare": "npm run build",
@@ -44,11 +43,11 @@
     "dist/*"
   ],
   "devDependencies": {
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.5",
     "ava": "^6.2.0",
     "gts": "^5.3.1",
-    "typedoc": "^0.27.4",
-    "typescript": "^5.7.2"
+    "typedoc": "^0.27.6",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "temporal-polyfill": "^0.2.5"
