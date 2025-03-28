@@ -220,7 +220,7 @@ export class NOAACalculator {
    * The zenith of astronomical sunrise and sunset. The sun is 90&deg; from the vertical 0&deg;
    * @private
    */
-  private static readonly GEOMETRIC_ZENITH: number = 90;
+  protected static readonly GEOMETRIC_ZENITH: number = 90;
 
   /**
    * Default value for Sun's zenith and true rise/set Zenith (used in this class and subclasses) is the angle that the
