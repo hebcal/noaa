@@ -43,11 +43,11 @@
     "dist/*"
   ],
   "devDependencies": {
-    "@types/node": "22.13.14",
+    "@types/node": "22.15.3",
     "ava": "^6.2.0",
     "gts": "^5.3.1",
-    "typedoc": "^0.28.1",
-    "typescript": "^5.8.2"
+    "typedoc": "^0.28.3",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "temporal-polyfill": "^0.3.0"

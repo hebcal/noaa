@@ -164,6 +164,9 @@ export class GeoLocation {
    *            The timeZone to set.
    */
   public setTimeZone(timeZoneId: string): void {
+    if (!timeZoneId) {
+      throw new RangeError('Invalid timeZoneId');
+    }
     this.timeZoneId = timeZoneId;
   }
 }
