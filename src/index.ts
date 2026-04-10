@@ -58,30 +58,11 @@ export class GeoLocation {
     this.setTimeZone(timeZoneId);
   }
 
-  /**
-   * @private
-   */
-  private latitude!: number;
-
-  /**
-   * @private
-   */
-  private longitude!: number;
-
-  /**
-   * @private
-   */
-  private locationName: string | null = null;
-
-  /**
-   * @private
-   */
-  private timeZoneId!: string;
-
-  /**
-   * @private
-   */
-  private elevation!: number;
+  protected latitude!: number;
+  protected longitude!: number;
+  protected locationName: string | null = null;
+  protected timeZoneId!: string;
+  protected elevation!: number;
 
   /**
    * Method to get the elevation in Meters.
@@ -251,13 +232,13 @@ export class NOAACalculator {
    * The Java Calendar encapsulated by this class to track the current date used by the class
    * @private
    */
-  private date: Temporal.PlainDate;
+  private readonly date: Temporal.PlainDate;
 
   /**
    * the {@link GeoLocation} used for calculations.
    * @private
    */
-  private geoLocation: GeoLocation;
+  private readonly geoLocation: GeoLocation;
   /**
    * The getSunrise method Returns a `Date` representing the
    * {@link getElevationAdjustment elevation adjusted} sunrise time. The zenith used
