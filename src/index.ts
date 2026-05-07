@@ -1,4 +1,6 @@
-import 'temporal-polyfill/global';
+if (typeof (globalThis as {Temporal?: unknown}).Temporal === 'undefined') {
+  await import('temporal-polyfill/global');
+}
 
 /**
  * java.lang.Math.toRadians
