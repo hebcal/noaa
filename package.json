@@ -55,5 +55,8 @@
   },
   "dependencies": {
     "temporal-polyfill": "^0.3.2"
+  },
+  "overrides": {
+    "tmp": "^0.2.6"
   }
 }
