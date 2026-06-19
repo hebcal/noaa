@@ -14,7 +14,7 @@ $ npm install @hebcal/noaa
 ## Synopsis
 ```javascript
 import {GeoLocation, NOAACalculator} from '@hebcal/noaa';
-import {Temporal} from 'temporal-polyfill';
+import 'temporal-polyfill/global';
 
 const latitude = 39.73915;
 const longitude = -104.9847;
