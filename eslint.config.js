@@ -1,27 +1,27 @@
 import {createRequire} from 'module';
 import {fileURLToPath} from 'url';
-import {dirname, join} from 'path';
 
 const require = createRequire(import.meta.url);
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const gtsConfig = require('gts/build/eslint.config.js');
+const tsconfigPath = fileURLToPath(new URL('./tsconfig.json', import.meta.url));
 
 export default [
   ...gtsConfig,
   {
-    ignores: ['build/', 'test/', 'docs/', 'dist/', 'src/*.po.ts', 'po2json.js'],
+    ignores: ['dist/', 'docs/', 'test/'],
   },
   {
+    // gts defaults eslint.config.js to commonjs; this one is ESM.
     files: ['eslint.config.js'],
     languageOptions: {
       sourceType: 'module',
     },
   },
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
-        project: join(__dirname, 'tsconfig.json'),
+        project: tsconfigPath,
       },
     },
     rules: {
