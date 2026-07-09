@@ -27,9 +27,9 @@
     "docs": "typedoc",
     "test": "node --test",
     "build": "tsc",
-    "clean": "gts clean",
-    "fix": "gts fix",
-    "lint": "gts lint",
+    "clean": "rm -rf dist docs",
+    "fix": "oxlint --fix && prettier --write src",
+    "lint": "oxlint && prettier --check src",
     "prepare": "npm run build",
     "pretest": "npm run build"
   },
@@ -48,14 +48,12 @@
   },
   "devDependencies": {
     "@types/node": "26.0.0",
-    "gts": "^7.0.0",
+    "oxlint": "^1.73.0",
+    "prettier": "^3.9.5",
     "typedoc": "^0.28.19",
     "typescript": "^6.0.3"
   },
   "dependencies": {
     "temporal-polyfill": "^1.0.1"
-  },
-  "overrides": {
-    "tmp": "^0.2.6"
   }
 }
