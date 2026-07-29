@@ -2,8 +2,8 @@
   "compilerOptions": {
     "target": "es2022",
     "lib": ["es2022", "esnext.temporal"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "strict": true,
     "declaration": true,
     "rootDir": "./src",
