@@ -811,13 +811,40 @@ export class NOAACalculator {
     time: number,
     isSunrise: boolean
   ): Temporal.ZonedDateTime | null {
-    if (isNaN(time)) {
+    const epochMillis: number = this.getEpochMillisFromTime(time, isSunrise);
+    if (isNaN(epochMillis)) {
       return null;
+    }
+    return Temporal.Instant.fromEpochMilliseconds(
+      epochMillis
+    ).toZonedDateTimeISO(this.geoLocation.getTimeZone());
+  }
+
+  /**
+   * The instant that {@link getDateFromTime} describes, as milliseconds since
+   * the epoch, without building a `Temporal.ZonedDateTime`.
+   *
+   * Constructing a `ZonedDateTime` costs roughly 750ns because the IANA zone
+   * has to be resolved, and that dominates this calculation. Callers that only
+   * want an instant — a `Date`, or the difference between two times — can skip
+   * it. Deriving the instant arithmetically also avoids a `PlainTime`
+   * allocation and turns the day rollover into a subtraction rather than a
+   * ~610ns `PlainDate.add({days})`.
+   *
+   * @param {number} time
+   *            The time in the format 18.75 for 6:45:00 PM, as returned by
+   *            {@link getUTCSunrise} / {@link getUTCSunset}, i.e. already
+   *            normalized to `[0, 24)`.
+   * @param {boolean} isSunrise true if the time is sunrise, and false if it is sunset
+   * @return {number} milliseconds since the epoch, or `NaN` if `time` is `NaN`
+   */
+  public getEpochMillisFromTime(time: number, isSunrise: boolean): number {
+    if (isNaN(time)) {
+      return NaN;
     }
     let calculatedTime: number = time;
 
-    let cal = this.getAdjustedDate();
-    //    let cal = new Temporal.PlainDate(adj.year, adj.month, adj.day);
+    const cal: Temporal.PlainDate = this.getAdjustedDate();
 
     const hours: number = Math.trunc(calculatedTime); // retain only the hours
     calculatedTime -= hours;
@@ -831,24 +858,32 @@ export class NOAACalculator {
     const localTimeHours: number = Math.trunc(
       this.geoLocation.getLongitude() / 15
     );
+    let dayOffset = 0;
     if (isSunrise && localTimeHours + hours > 18) {
-      cal = cal.add({days: -1});
-      //      cal = cal.minus({days: 1});
+      dayOffset = -1;
     } else if (!isSunrise && localTimeHours + hours < 6) {
-      cal = cal.add({days: 1});
+      dayOffset = 1;
     }
 
-    return cal
-      .toZonedDateTime({
-        timeZone: 'UTC',
-        plainTime: new Temporal.PlainTime(
-          hours,
-          minutes,
-          seconds,
-          Math.trunc(calculatedTime * 1000)
-        ),
-      })
-      .withTimeZone(this.geoLocation.getTimeZone());
+    const year: number = cal.year;
+    let millis: number = Date.UTC(
+      year,
+      cal.month - 1,
+      cal.day,
+      hours,
+      minutes,
+      seconds,
+      Math.trunc(calculatedTime * 1000)
+    );
+    if (year >= 0 && year < 100) {
+      // Date.UTC() maps years 0-99 onto 1900-1999; setUTCFullYear() does not.
+      // Worth the branch (about 3ns): @hebcal/core computes candle-lighting
+      // times for early historical years rather than suppressing them.
+      const d = new Date(millis);
+      d.setUTCFullYear(year);
+      millis = d.getTime();
+    }
+    return millis + dayOffset * 86400000;
   }
 
   /**
