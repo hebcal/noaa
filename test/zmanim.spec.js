@@ -127,11 +127,12 @@ test('getDateFromTime keeps the location time zone', () => {
 });
 
 test('handles the day rollover near the antimeridian', () => {
-  // Kiritimati is UTC+14, so the UTC instant falls on a different day than
-  // the requested PlainDate. That rollover used to be a PlainDate.add({days})
-  // and is now arithmetic on the epoch, so pin the exact instants. (The local
-  // date reading one day after the requested PlainDate is long-standing
-  // antimeridian behavior, not a consequence of that change.)
+  // Kiritimati is UTC+14 but at longitude -157, so its calendar date is a day
+  // ahead of what its longitude implies. The date is adjusted before
+  // calculating so that the times fall on the requested local date.
+  // Degree-based times match KosherJava to the millisecond; sunrise and
+  // sunset differ by about a second because KosherJava uses the apparent
+  // solar radius for the date rather than a fixed 16 arcminutes.
   const gloc = new GeoLocation(null, 1.87, -157.43, 0, 'Pacific/Kiritimati');
   const noaa = new NOAACalculator(gloc, new Temporal.PlainDate(2026, 6, 15));
   const sunrise = noaa.getSunrise();
@@ -139,11 +140,70 @@ test('handles the day rollover near the antimeridian', () => {
   assert.ok(sunset.epochMilliseconds > sunrise.epochMilliseconds);
   assert.strictEqual(
     sunrise.toString(),
-    '2026-06-16T06:23:25.353+14:00[Pacific/Kiritimati]'
+    '2026-06-15T06:23:13.015+14:00[Pacific/Kiritimati]'
   );
   assert.strictEqual(
     sunset.toString(),
-    '2026-06-16T18:37:15.29+14:00[Pacific/Kiritimati]'
+    '2026-06-15T18:37:02.007+14:00[Pacific/Kiritimati]'
+  );
+  assert.strictEqual(
+    noaa.getSunsetOffsetByDegrees(98.5).toString(),
+    '2026-06-15T19:10:31.176+14:00[Pacific/Kiritimati]'
+  );
+});
+
+test('Samoa is adjusted for the antimeridian', () => {
+  const gloc = new GeoLocation(null, -13.8333, -171.7667, 0, 'Pacific/Apia');
+  assert.strictEqual(
+    gloc.getAntimeridianAdjustment(new Temporal.PlainDate(2023, 6, 15)),
+    -1
+  );
+  const noaa = new NOAACalculator(gloc, new Temporal.PlainDate(2023, 6, 15));
+  assert.strictEqual(
+    noaa.getSunrise().toString(),
+    '2023-06-15T06:47:55.77+13:00[Pacific/Apia]'
+  );
+  assert.strictEqual(
+    noaa.getSunset().toString(),
+    '2023-06-15T18:06:52.371+13:00[Pacific/Apia]'
+  );
+  assert.strictEqual(
+    noaa.getSunsetOffsetByDegrees(98.5).toString(),
+    '2023-06-15T18:41:09.572+13:00[Pacific/Apia]'
+  );
+});
+
+test('getAntimeridianAdjustment is 0 for most of the world', () => {
+  const date = new Temporal.PlainDate(2023, 6, 15);
+  const cases = [
+    [40.71427, -74.00597, 'America/New_York'],
+    [21.30694, -157.85833, 'Pacific/Honolulu'],
+    [-36.84853, 174.76349, 'Pacific/Auckland'],
+    [64.75, 177.48, 'Asia/Anadyr'],
+  ];
+  for (const [lat, lon, tzid] of cases) {
+    const gloc = new GeoLocation(null, lat, lon, 0, tzid);
+    assert.strictEqual(gloc.getAntimeridianAdjustment(date), 0, tzid);
+  }
+});
+
+test('Julian day is correct in the 1900s', () => {
+  // getJulianDay() once truncated 2 - a + a / 4 as a whole instead of using
+  // integer division for a / 4, putting every date from 1900 through 1999
+  // off by one day. Expected values from KosherJava.
+  const gloc = new GeoLocation(null, 42.35843, -71.05977, 0, 'America/New_York');
+  const noaa = new NOAACalculator(gloc, new Temporal.PlainDate(1990, 6, 15));
+  assert.strictEqual(
+    noaa.getSunsetOffsetByDegrees(98.5).toString(),
+    '1990-06-15T21:15:26.191-04:00[America/New_York]'
+  );
+  assert.strictEqual(
+    noaa.getSunrise().toString(),
+    '1990-06-15T05:06:42.517-04:00[America/New_York]'
+  );
+  assert.strictEqual(
+    noaa.getSunset().toString(),
+    '1990-06-15T20:22:44.511-04:00[America/New_York]'
   );
 });
 

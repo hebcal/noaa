@@ -150,6 +150,62 @@ export class GeoLocation {
     }
     this.timeZoneId = timeZoneId;
   }
+
+  /**
+   * A method that will return the location's local mean time offset in milliseconds from local
+   * [standard time](https://en.wikipedia.org/wiki/Standard_time). The globe is split into 360&deg;, with
+   * 15&deg; per hour of the day. For a local that is at a longitude that is evenly divisible by 15
+   * (longitude % 15 == 0), at solar noon (with adjustment for the
+   * [equation of time](https://en.wikipedia.org/wiki/Equation_of_time)) the sun should be directly overhead,
+   * so a user who is 1&deg; west of this will have noon at 4 minutes after standard time noon, and conversely,
+   * a user who is 1&deg; east of the 15&deg; longitude will have noon at 11:56 AM.
+   * @param instant the instant at which to read the time zone offset (DST is taken into account)
+   * @return the offset in milliseconds not accounting for Daylight saving time. A positive value will be returned
+   *         East of the 15&deg; timezone line, and a negative value West of it.
+   */
+  public getLocalMeanTimeOffset(instant: Temporal.Instant): number {
+    const timezoneOffsetMillis =
+      instant.toZonedDateTimeISO(this.timeZoneId).offsetNanoseconds / 1e6;
+    return this.longitude * 4 * 60 * 1000 - timezoneOffsetMillis;
+  }
+
+  /**
+   * Adjust the date for [antimeridian](https://en.wikipedia.org/wiki/180th_meridian) crossover. This is
+   * needed to deal with edge cases such as Samoa that use a different calendar date than expected based on their
+   * geographic location.
+   *
+   * The actual Time Zone offset may deviate from the expected offset based on the longitude. Since the 'absolute time'
+   * calculations are always based on longitudinal offset from UTC for a given date, the date is presumed to only
+   * increase East of the Prime Meridian, and to only decrease West of it. For Time Zones that cross the antimeridian,
+   * the date will be artificially adjusted before calculation to conform with this presumption.
+   *
+   * For example, Apia, Samoa with a longitude of -171.75 uses a local offset of +14:00. When calculating sunrise for
+   * 2018-02-03, the calculator should operate using 2018-02-02 since the expected zone is -11. After determining the
+   * UTC time, the local DST offset of [UTC+14:00](https://en.wikipedia.org/wiki/UTC%2B14:00) should be applied
+   * to bring the date back to 2018-02-03.
+   * @param date the date, at the start of which (in this location's time zone) the offset is read
+   * @return the number of days to adjust the date This will typically be 0 unless the date crosses the antimeridian
+   */
+  public getAntimeridianAdjustment(date: Temporal.PlainDate): number {
+    // Time zone offsets range from -12:00 to +14:00, so an offset of 20 hours
+    // or more needs a longitude of at least 120 degrees east or 90 degrees
+    // west. Skip resolving the time zone for the rest of the world.
+    if (this.longitude > -90 && this.longitude < 120) {
+      return 0;
+    }
+    const midnight = date.toZonedDateTime(this.timeZoneId).toInstant();
+    const localHoursOffset = this.getLocalMeanTimeOffset(midnight) / 3600000;
+    if (localHoursOffset >= 20) {
+      // a location far east using a time zone from across the antimeridian to
+      // the west (none are known today, but better safe than sorry)
+      return 1; // roll the date forward a day
+    } else if (localHoursOffset <= -20) {
+      // a location far west using a time zone from across the antimeridian to
+      // the east, such as Samoa or Kiritimati
+      return -1; // roll the date back a day
+    }
+    return 0; // 99.999% of the world will have no adjustment
+  }
 }
 
 /**
@@ -558,8 +614,16 @@ export class NOAACalculator {
    * @return the adjusted Calendar
    */
   private getAdjustedDate(): Temporal.PlainDate {
-    return this.date;
+    if (this.adjustedDate === undefined) {
+      const offset = this.geoLocation.getAntimeridianAdjustment(this.date);
+      this.adjustedDate =
+        offset === 0 ? this.date : this.date.add({days: offset});
+    }
+    return this.adjustedDate;
   }
+
+  /** Memoized result of {@link getAdjustedDate} */
+  private adjustedDate: Temporal.PlainDate | undefined;
 
   /**
    * Method to return the adjustment to the zenith required to account for the elevation. Since a person at a higher
@@ -901,8 +965,11 @@ export class NOAACalculator {
       year -= 1;
       month += 12;
     }
+    // Integer division, as in the Java original: truncating `2 - a + a / 4`
+    // as a whole is off by one day whenever `a` is not a multiple of 4
+    // (e.g. every year from 1900 through 1999).
     const a: number = Math.trunc(year / 100);
-    const b: number = Math.trunc(2 - a + a / 4);
+    const b: number = 2 - a + Math.trunc(a / 4);
 
     return (
       Math.floor(365.25 * (year + 4716)) +
