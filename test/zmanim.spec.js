@@ -216,3 +216,30 @@ test('early historical years are not shifted into the 20th century', () => {
     assert.strictEqual(sunset.year, year, `year ${year}`);
   }
 });
+
+test('Julian day matches independent sunset around century boundaries', () => {
+  const gloc = new GeoLocation(null, 40.71427, -74.00597, 0, 'America/New_York');
+  const sunset = (y, m, d) =>
+    new NOAACalculator(gloc, new Temporal.PlainDate(y, m, d)).getSunset();
+  // Same second as hebcal-go's noaa-go, a separate implementation
+  assert.strictEqual(
+    sunset(1977, 4, 1)
+      .toInstant()
+      .round({smallestUnit: 'second', roundingMode: 'floor'})
+      .toString(),
+    '1977-04-01T23:20:44Z'
+  );
+  // In early March, New York sunset is about 68 seconds later each day.
+  // The off-by-one Julian day made the day before 1 March 2000 and the
+  // day before 1 March 2100 yield the same sunset as 1 March itself.
+  for (const [prev, next] of [
+    [[2000, 2, 29], [2000, 3, 1]],
+    [[2100, 2, 28], [2100, 3, 1]],
+    [[1999, 12, 31], [2000, 1, 1]],
+  ]) {
+    const diff =
+      sunset(...next).epochMilliseconds - sunset(...prev).epochMilliseconds;
+    const label = `${prev.join('-')} to ${next.join('-')}`;
+    assert.ok(diff > 86400000 + 30000 && diff < 86400000 + 100000, label);
+  }
+});
